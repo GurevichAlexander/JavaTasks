@@ -13,16 +13,9 @@ public class Bonds {
         return(this.issuer);
     }
 
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
     public double getPrice() {
         return(this.price);
     }
 
-    public void setPrice(double price) {
-        this.price= price;
-    }
 
 }
