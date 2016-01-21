@@ -5,31 +5,39 @@ package ru.spbstu.appmath.gurevich;
  */
 
 public class Parser {
-    public Parser() {
-    }
-    /* creates a tree of expressions */
-    public Expression parse(String s) throws Exception{
 
-        String trimmed = s.trim();  //this function cuts out all spaces and tabs
+    /* creates a tree of expressions */
+    public Expression parse(final String s) throws Exception {
+        if (!correctBrackets(s))
+            throw new Exception("Incorrect parenthesis syntax");
+        final String trimmed = s.trim();  //this function cuts out all spaces and tabs
     
         /*processes +- outside brackets */
         int plusPos = findPosOperator(trimmed, '+');
         int minusPos = findPosOperator(trimmed, '-');
-        if (plusPos != -1 && (minusPos == -1 || plusPos <  minusPos)) {
+        if (plusPos != -1){// && (minusPos == -1 || plusPos < minusPos)) {
+            if (trimmed.substring(0, plusPos).equals("") || trimmed.substring(plusPos+1).equals(""))
+                throw new Exception("Missing argument!");
             return new Binary(parse(trimmed.substring(0, plusPos)), parse(trimmed.substring(plusPos + 1)), '+');
         } else if (minusPos != -1) {
+            if (trimmed.substring(minusPos+1).equals(""))
+                throw new Exception("Missing argument!");
             return new Binary(parse(trimmed.substring(0, minusPos)), parse(trimmed.substring(minusPos + 1)), '-');
         }
 
         /* processes * outside brackets*/
         int multPos = findPosOperator(trimmed, '*');
         if (multPos != -1) {
+            if (trimmed.substring(0, multPos).equals("") || trimmed.substring(multPos+1).equals(""))
+                throw new Exception("Missing argument!");
             return new Binary(parse(trimmed.substring(0, multPos)), parse(trimmed.substring(multPos + 1)), '*');
         }
 
         /* processes / outside brackets*/
         int divPos = findPosOperator(trimmed, '/');
         if (divPos != -1) {
+            if (trimmed.substring(0, divPos).equals("") || trimmed.substring(divPos+1).equals(""))
+                throw new Exception("Missing argument!");
             return new Binary(parse(trimmed.substring(0, divPos)), parse(trimmed.substring(divPos + 1)), '/');
         }
 
@@ -67,7 +75,7 @@ public class Parser {
     }
 
     /* looks for operator op outside brackets */
-    private int findPosOperator(String trimmed, char op) throws Exception{
+    private static int findPosOperator(String trimmed, char op) throws Exception {
         int index = 0;
         int pos;
         do {
@@ -79,8 +87,7 @@ public class Parser {
 
     /*Checks if i-th character of string s is closed in brackets*/
     private static boolean inBrackets(String s, int i) {
-        if (i != -1)
-        {
+        if (i != -1) {
             int cOpen = 0;
             int cClose = 0;
             for (int j = 0; j < i; j++) {
@@ -96,12 +103,11 @@ public class Parser {
     }
 
     /* returns position of the end of bracket construction after i-th element*/
-    private static int getIndexLastClose(String s, int i) throws Exception{
-        if (i != -1)
-        {
+    private static int getIndexLastClose(String s, int i) throws Exception {
+        if (i != -1) {
             int cOpen = 0;
             int cClose = 0;
-            for (int j = 0; j < i ; j++) {
+            for (int j = 0; j < i; j++) {
                 if (s.charAt(j) == '(')
                     cOpen++;
                 if (s.charAt(j) == ')')
@@ -116,8 +122,27 @@ public class Parser {
                     throw new Exception("Problem with brackets!");
             }
             return index + 1;
-        }
-        else
+        } else
             return 0;
+    }
+
+
+    private static boolean correctBrackets(String s) {
+        int bracketsOpen = 0;
+        int bracketsClose = 0;
+        for (int i = 0; i < s.length(); ++i) {
+            switch (s.charAt(i)) {
+                case ('('): {
+                    bracketsOpen++;
+                    break;
+                }
+                case (')'): {
+                    bracketsClose++;
+                }
+            }
+            if (bracketsClose > bracketsOpen)
+                return false;
+        }
+        return (bracketsOpen == bracketsClose);
     }
 }

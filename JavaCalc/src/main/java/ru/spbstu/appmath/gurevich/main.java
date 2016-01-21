@@ -1,7 +1,7 @@
 package ru.spbstu.appmath.gurevich;
 
 
-public class main {
+public class Main {
     public static void main(String[] args) {
         double var;
         if (args.length == 2)

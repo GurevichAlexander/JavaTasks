@@ -17,23 +17,23 @@ public class Binary implements Expression{
     }
 
     public double calc(double x) throws Exception{
-        double res_left = this.left.calc(x);
-        double res_right = this.right.calc(x);
+        double resLeft = this.left.calc(x);
+        double resRight = this.right.calc(x);
         double result;
         switch (this.operation) {
             case '+':
-                result = res_left + res_right;
+                result = resLeft + resRight;
                 break;
             case '-':
-                result = res_left - res_right;
+                result = resLeft - resRight;
                 break;
             case '*':
-                result = res_left * res_right;
+                result = resLeft * resRight;
                 break;
             case '/':
-                if (res_right == 0)
+                if (resRight == 0)
                     throw new Exception("Division by zero");
-                result = res_left / res_right;
+                result = resLeft / resRight;
                 break;
             default:
                 result = 0;

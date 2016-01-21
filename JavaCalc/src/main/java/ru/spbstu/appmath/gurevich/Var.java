@@ -5,7 +5,7 @@ package ru.spbstu.appmath.gurevich;
  */
 
 public class Var implements Expression {
-    public double calc(double x) {
+    public double calc(final double x) {
         return x;
     }
 }

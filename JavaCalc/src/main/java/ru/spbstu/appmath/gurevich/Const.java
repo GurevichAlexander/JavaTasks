@@ -7,11 +7,11 @@ package ru.spbstu.appmath.gurevich;
 public class Const implements Expression {
     private double value = 0;
 
-    public Const(double val) {
+    public Const(final double val) {
         this.value = val;
     }
 
-    public double calc(double x) {
+    public double calc(final double x) {
         return this.value;
     }
 
