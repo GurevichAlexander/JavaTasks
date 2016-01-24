@@ -1,5 +1,6 @@
 package ru.spbstu.appmath.gurevich;
 
+import ru.spbstu.appmath.gurevich.exceptions.singlecalcexceptions.SingleCalcException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,11 +21,8 @@ public class CalcTest {
     private Double result;
     private String exception;
 
-    private static ArrayList<Object[]> initTestData() throws Exception {
-        try {
-            String path = Paths.get("src", "test", "java", "ru", "spbstu", "appmath", "gurevich", "tests.txt").toString();
-            Scanner f = new Scanner(new File(path));
-
+    private static ArrayList<Object[]> initTestData() throws NullPointerException {
+        try (Scanner f = new Scanner(CalcTest.class.getClassLoader().getResourceAsStream("tests.txt"))) {
             ArrayList<Object[]> tests = new ArrayList<Object[]>();
             while (f.hasNextLine()) {
                 String line = f.nextLine();
@@ -33,10 +31,10 @@ public class CalcTest {
             }
             f.close();
             return tests;
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println("\"tests.txt\" is not in resources directory");
+            throw new NullPointerException();
         }
-        return null;
     }
 
     public CalcTest(String expression, Double variable, Double result, String exceptionMessage) {
@@ -47,13 +45,8 @@ public class CalcTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> testData() throws Exception {
-        try {
-            return initTestData();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+    public static Collection<Object[]> testData() {
+        return initTestData();
     }
 
     @Test
@@ -64,7 +57,7 @@ public class CalcTest {
             f = p.parse(expression);
             double counted = f.calc(variable);
             Assert.assertTrue("Wrong answer", Math.abs(counted - result) < epsilon);
-        } catch (Exception e) {
+        } catch (SingleCalcException e) {
             Assert.assertTrue("Wrong exception", exception.equals(e.getMessage()));
         }
     }

@@ -4,7 +4,7 @@
 
   <groupId>ru.spbstu.appmath.gurevich</groupId>
   <artifactId>JavaCalc</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.8</version>
   <packaging>jar</packaging>
 
   <name>JavaCalc</name>

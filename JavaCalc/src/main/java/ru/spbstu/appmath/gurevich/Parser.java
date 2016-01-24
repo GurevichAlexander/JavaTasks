@@ -1,5 +1,6 @@
 package ru.spbstu.appmath.gurevich;
 
+import ru.spbstu.appmath.gurevich.exceptions.singlecalcexceptions.WrongSyntaxException;
 /*
  * Implicitly makes a tree of expressions
  */
@@ -7,37 +8,37 @@ package ru.spbstu.appmath.gurevich;
 public class Parser {
 
     /* creates a tree of expressions */
-    public Expression parse(final String s) throws Exception {
+    public Expression parse(final String s) throws WrongSyntaxException {
         if (!correctBrackets(s))
-            throw new Exception("Incorrect parenthesis syntax");
+            throw new WrongSyntaxException("Incorrect parenthesis syntax");
         final String trimmed = s.trim();  //this function cuts out all spaces and tabs
     
         /*processes +- outside brackets */
         int plusPos = findPosOperator(trimmed, '+');
         int minusPos = findPosOperator(trimmed, '-');
-        if (plusPos != -1){// && (minusPos == -1 || plusPos < minusPos)) {
-            if (trimmed.substring(0, plusPos).equals("") || trimmed.substring(plusPos+1).equals(""))
-                throw new Exception("Missing argument!");
+        if (plusPos != -1) {// && (minusPos == -1 || plusPos < minusPos)) {
+            if (trimmed.substring(0, plusPos).equals("") || trimmed.substring(plusPos + 1).equals(""))
+                throw new WrongSyntaxException("Missing argument!");
             return new Binary(parse(trimmed.substring(0, plusPos)), parse(trimmed.substring(plusPos + 1)), '+');
         } else if (minusPos != -1) {
-            if (trimmed.substring(minusPos+1).equals(""))
-                throw new Exception("Missing argument!");
+            if (trimmed.substring(minusPos + 1).equals(""))
+                throw new WrongSyntaxException("Missing argument!");
             return new Binary(parse(trimmed.substring(0, minusPos)), parse(trimmed.substring(minusPos + 1)), '-');
         }
 
         /* processes * outside brackets*/
         int multPos = findPosOperator(trimmed, '*');
         if (multPos != -1) {
-            if (trimmed.substring(0, multPos).equals("") || trimmed.substring(multPos+1).equals(""))
-                throw new Exception("Missing argument!");
+            if (trimmed.substring(0, multPos).equals("") || trimmed.substring(multPos + 1).equals(""))
+                throw new WrongSyntaxException("Missing argument!");
             return new Binary(parse(trimmed.substring(0, multPos)), parse(trimmed.substring(multPos + 1)), '*');
         }
 
         /* processes / outside brackets*/
         int divPos = findPosOperator(trimmed, '/');
         if (divPos != -1) {
-            if (trimmed.substring(0, divPos).equals("") || trimmed.substring(divPos+1).equals(""))
-                throw new Exception("Missing argument!");
+            if (trimmed.substring(0, divPos).equals("") || trimmed.substring(divPos + 1).equals(""))
+                throw new WrongSyntaxException("Missing argument!");
             return new Binary(parse(trimmed.substring(0, divPos)), parse(trimmed.substring(divPos + 1)), '/');
         }
 
@@ -58,9 +59,9 @@ public class Parser {
             if ("x".equals(trimmed)) {
                 return new Var();
             }
-            throw new Exception("Unexpected symbol!");
+            throw new WrongSyntaxException("Unexpected symbol!");
         }
-        throw new Exception("Syntax error!");
+        throw new WrongSyntaxException("Syntax error!");
     }
 
     /* Checks if string is a number or empty */
@@ -75,7 +76,7 @@ public class Parser {
     }
 
     /* looks for operator op outside brackets */
-    private static int findPosOperator(String trimmed, char op) throws Exception {
+    private static int findPosOperator(String trimmed, char op) {
         int index = 0;
         int pos;
         do {
@@ -103,7 +104,7 @@ public class Parser {
     }
 
     /* returns position of the end of bracket construction after i-th element*/
-    private static int getIndexLastClose(String s, int i) throws Exception {
+    private static int getIndexLastClose(String s, int i) {
         if (i != -1) {
             int cOpen = 0;
             int cClose = 0;
@@ -116,10 +117,10 @@ public class Parser {
             int index = i;
             while (cOpen != cClose) {
                 index = s.indexOf(')', index + 1);
-                if (index != -1)
-                    cClose++;
-                else
-                    throw new Exception("Problem with brackets!");
+                //    if (index != -1)
+                cClose++;
+                //   else
+                //       throw new Exception("Problem with brackets!");
             }
             return index + 1;
         } else
