@@ -10,11 +10,7 @@ public class MultiMain {
             final MultiCalc f = new MultiCalc();
             final String inFile = args[0];
             final String outFile = args[1];
-            try{
-                f.calcAndWrite(args[2], inFile, outFile);
-            } catch(RangeException e){
-                System.out.println(e.getMessage());
-            }
+            f.calcAndWrite(args[2], inFile, outFile);
         } else {
             System.out.println("Arguments error");
         }

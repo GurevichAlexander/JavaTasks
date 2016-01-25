@@ -6,9 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
@@ -21,21 +18,6 @@ public class CalcTest {
     private Double result;
     private String exception;
 
-    private static ArrayList<Object[]> initTestData() throws NullPointerException {
-        try (Scanner f = new Scanner(CalcTest.class.getClassLoader().getResourceAsStream("tests.txt"))) {
-            ArrayList<Object[]> tests = new ArrayList<Object[]>();
-            while (f.hasNextLine()) {
-                String line = f.nextLine();
-                String[] data = line.split(";");
-                tests.add(new Object[]{data[0], Double.parseDouble(data[1]), Double.parseDouble(data[2]), data[3]});
-            }
-            f.close();
-            return tests;
-        } catch (NullPointerException e) {
-            System.out.println("\"tests.txt\" is not in resources directory");
-            throw new NullPointerException();
-        }
-    }
 
     public CalcTest(String expression, Double variable, Double result, String exceptionMessage) {
         this.expression = expression;
@@ -45,8 +27,18 @@ public class CalcTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> testData() {
-        return initTestData();
+    public static Collection<Object[]> testData(){
+        try (Scanner f = new Scanner(CalcTest.class.getClassLoader().getResourceAsStream("tests.txt"))) {
+            ArrayList<Object[]> tests = new ArrayList<Object[]>();
+            while (f.hasNextLine()) {
+                String line = f.nextLine();
+                String[] data = line.split(";");
+                tests.add(new Object[]{data[0], Double.parseDouble(data[1]), Double.parseDouble(data[2]), data[3]});
+            }
+            f.close();
+            return tests;
+          //  System.out.println("\"tests.txt\" is not in resources directory");
+        }
     }
 
     @Test

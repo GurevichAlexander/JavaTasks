@@ -4,13 +4,12 @@ import ru.spbstu.appmath.gurevich.exceptions.singlecalcexceptions.WrongSyntaxExc
 import ru.spbstu.appmath.gurevich.exceptions.singlecalcexceptions.SingleCalcException;
 import ru.spbstu.appmath.gurevich.exceptions.multicalcexceptions.RangeException;
 
-import java.awt.font.NumericShaper;
 import java.io.*;
 import java.util.*;
 
 public class MultiCalc {
 
-    public void calcAndWrite(String sRange, String inFile, String outFile) throws RangeException{
+    public void calcAndWrite(String sRange, String inFile, String outFile){
         try {
             final ParseRange range = new ParseRange(sRange);
 
@@ -24,6 +23,7 @@ public class MultiCalc {
                 }
             } catch (IOException e) {
                 System.out.println(e.getMessage());
+                return;
             }
             ArrayList<String> tasks = new ArrayList();
             try (Scanner scanner = new Scanner(fileIn)) {                   //Reading input file
@@ -39,7 +39,8 @@ public class MultiCalc {
             final List<ArrayList<String>> result = solveAll(range, tasks);
             writeFile(fileOut, result);
         } catch (RangeException e) {
-            throw new RangeException(e.getMessage());
+            System.out.println(e.getMessage());
+            return;
         }
     }
 
